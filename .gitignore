@@ -1,0 +1,21 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Weights, videos, data (never commit)
+*.pt
+*.pth
+*.onnx
+*.mp4
+*.avi
+data/
+outputs/
+
+# Cloned upstream code (Roboflow sports) - fetched locally, not vendored
+third_party/
+
+# Local tool state
+.remember/
