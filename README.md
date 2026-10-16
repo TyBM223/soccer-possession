@@ -34,6 +34,49 @@ PATH="$PWD/.venv/bin:$PATH" bash third_party/sports/examples/soccer/setup.sh
 
 Weights, videos, `third_party/`, `data/` and `outputs/` are gitignored.
 
+## How possession is computed
+
+`src/possession.py` has three functions, run in order on per-frame detections.
+
+### `raw_call(ball_xy, players, max_distance_px)`
+
+One frame's call, before smoothing.
+
+- The player nearest the ball gets the call for their team if they are within
+  `max_distance_px`. Distance is straight-line, from the ball center to the
+  player's foot position, since that is where the ball is played.
+- No ball detected, no players, or nobody in range: no call. A ball in flight
+  always has a nearest player but nobody in possession, so the distance limit
+  keeps those frames from being credited to whoever happens to be closest.
+- A distance exactly at the limit counts as a call.
+- Players from different teams exactly tied for nearest: no call, since the
+  ball is contested. Tied players from the same team: that team.
+
+### `smooth_calls(raw_calls, window)`
+
+Removes one-frame flickers from the raw calls.
+
+- Each frame takes the majority vote of the raw calls in a window of `window`
+  frames.
+- No-call frames don't vote. A short ball dropout doesn't erase possession,
+  but a dropout longer than the window becomes no call.
+- The window is centered on the frame. Processing is offline, so future frames
+  are available, and centering keeps the call lined up with the frame it is
+  drawn on. A trailing window would lag by about half a window. Windows are
+  clipped at the start and end of the video.
+- No votes, or a tied vote: no call. Without a majority the frame is
+  uncertain, so it isn't given to either team.
+
+### `possession_stats(smoothed_calls)`
+
+- Possession % per team = that team's frames / frames with a call. No-call
+  frames are excluded, never attributed to a team.
+- Coverage % = frames with a call / total frames. A weak ball detector shows up
+  as low coverage instead of being hidden behind confident possession numbers.
+
+The two constants start at 80 px and 5 frames in `src/config.py` and have not
+been tuned yet.
+
 ## Credits and licenses
 
 - **[roboflow/sports](https://github.com/roboflow/sports)** (MIT License,

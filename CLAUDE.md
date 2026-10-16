@@ -1,4 +1,7 @@
-- src/possession.py is written by the owner (Ty). Do not write or rewrite it. You may review it and suggest changes with explanations.
+- src/possession.py design choices. Keep them unless the owner changes them, and explain and show the diff before any change:
+  - raw_call: nearest player (foot position) within max_distance_px gets the call; exactly at the limit counts; nearest players from different teams exactly tied is no call.
+  - smooth_calls: majority vote over a window centered on the frame, clipped at the video's ends; no-call frames don't vote; no votes or a tied vote is no call.
+  - possession_stats: possession % uses only frames with a call (no-call frames are never attributed); coverage % = frames with a call / total frames.
 - Do not change POSSESSION_MAX_DISTANCE_PX or POSSESSION_SMOOTHING_WINDOW in src/config.py. The owner tunes these by watching output video.
 - Do not train or fine-tune models. Use Roboflow's pretrained weights.
 - Never commit weights, videos, or datasets.
