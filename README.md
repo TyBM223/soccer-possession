@@ -19,20 +19,30 @@ project adds ball possession tracking on top of them.
 
 ## Setup
 
-Requires Python 3.10+ (developed on 3.14) and ffmpeg. Runs on CPU; a GPU is optional.
+You need Python 3.10 or newer (this was built on 3.14) and ffmpeg, a
+command-line tool for working with video. A regular CPU is enough. A GPU makes
+it faster but isn't required.
 
 ```bash
+# 1. Create a separate Python environment just for this project
 python3 -m venv .venv
-.venv/bin/pip install -r requirements.txt
 
-# Roboflow's sports repo: provides the setup script for weights and sample clips
+# 2. Install the exact package versions in requirements.txt.
+#    --no-deps installs that list and nothing else. The top of
+#    requirements.txt explains why this matters.
+.venv/bin/pip install --no-deps -r requirements.txt
+
+# 3. Download Roboflow's sports repo, then run its setup script, which fetches
+#    the pretrained models and the sample match clips
 git clone https://github.com/roboflow/sports.git third_party/sports
 PATH="$PWD/.venv/bin:$PATH" bash third_party/sports/examples/soccer/setup.sh
 
+# 4. Run the tests to check everything is installed correctly
 .venv/bin/python -m pytest
 ```
 
-Weights, videos, `third_party/`, `data/` and `outputs/` are gitignored.
+The models, videos, and the `third_party/`, `data/` and `outputs/` folders are
+large or downloaded, so they're kept out of git (see `.gitignore`).
 
 ## How possession is computed
 

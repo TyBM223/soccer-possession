@@ -1,5 +1,23 @@
-# Pinned with: pip freeze (Python 3.14, Linux, CPU run; torch wheel ships CUDA libs)
-# Roboflow sports is installed from GitHub at a fixed commit (not on PyPI).
+# The exact version of every package this project uses, so anyone can rebuild
+# the same setup. Made with `pip freeze` on Linux with Python 3.14, running on
+# CPU. PyTorch's package includes GPU (CUDA) libraries anyway, so the download
+# is large.
+#
+# Install with:
+#     pip install --no-deps -r requirements.txt
+# "--no-deps" tells pip to install exactly this list and nothing more. The list
+# is already complete. Without the flag, pip would also add a second copy of
+# OpenCV (the video library) that can't open windows, and Roboflow's example
+# needs a window to show its preview while it runs.
+#
+# Two packages are pinned on purpose:
+# - sports: Roboflow's soccer toolkit. It isn't on PyPI, so it is installed
+#   straight from GitHub, locked to one commit.
+# - supervision 0.23.0, an older release. Roboflow's soccer example passes a
+#   setting called "overlap_filter_strategy" that newer releases removed, and
+#   its ball detection crashes on them. 0.23.0 is the last release that still
+#   accepts that setting. It is also the release that asks pip for the second
+#   OpenCV copy described above.
 annotated-doc==0.0.5
 anyio==4.15.1
 av==19.0.0
@@ -82,7 +100,7 @@ shellingham==1.5.4
 six==1.17.0
 soupsieve==2.10
 sports @ git+https://github.com/roboflow/sports.git@42c80c06b6b65a7f89455b89fe31cdf4c38ba227
-supervision==0.30.6
+supervision==0.23.0
 sympy==1.14.0
 threadpoolctl==3.7.0
 tokenizers==0.23.2
